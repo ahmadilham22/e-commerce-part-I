@@ -5,6 +5,7 @@ const validate = (schema, request) => {
     abortEarly: false,
     allowUnknown: false,
   });
+
   if (result.error) {
     const validationError = result.error.details.map((detail) =>
       detail.message.replace(/"/g, '')
