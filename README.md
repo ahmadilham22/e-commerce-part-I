@@ -1,6 +1,6 @@
 # E-Commerce API
 
-REST API untuk aplikasi e-commerce yang dibangun dengan Express.js, Prisma ORM, dan PostgreSQL. Dilengkapi dengan payment gateway Midtrans, upload gambar via Cloudinary, dan notifikasi Telegram.
+REST API for an e-commerce application built with Express.js, Prisma ORM, and PostgreSQL. Includes Midtrans payment gateway, image upload via Cloudinary, and Telegram notifications.
 
 ## Tech Stack
 
@@ -17,17 +17,17 @@ REST API untuk aplikasi e-commerce yang dibangun dengan Express.js, Prisma ORM, 
 - Cloudinary - Image Upload & Storage
 - Telegram Bot API - Order Notification
 
-## Fitur
+## Features
 
-- **Authentication** - Register & login dengan JWT
-- **Product Management** - CRUD produk dengan kategori
-- **Product Images** - Upload & kelola gambar produk (Cloudinary)
-- **Category Management** - CRUD kategori produk
-- **Shopping Cart** - Tambah, update, hapus item di keranjang
-- **Order & Checkout** - Buat pesanan langsung atau dari keranjang
-- **Payment Gateway** - Integrasi Midtrans untuk pembayaran
-- **Telegram Notification** - Notifikasi otomatis saat ada pesanan baru
-- **User Management** - Kelola data user
+- **Authentication** - Register & login with JWT
+- **Product Management** - CRUD products with categories
+- **Product Images** - Upload & manage product images (Cloudinary)
+- **Category Management** - CRUD product categories
+- **Shopping Cart** - Add, update, and remove items in the cart
+- **Order & Checkout** - Create orders directly or from the cart
+- **Payment Gateway** - Midtrans integration for payments
+- **Telegram Notification** - Automatic notification when a new order arrives
+- **User Management** - Manage user data
 
 ## Database Schema
 
@@ -48,62 +48,62 @@ Categories ──< Products
 
 ### Public Routes
 
-| Method | Endpoint | Deskripsi |
-|--------|----------|-----------|
-| POST | `/api/auth/signup` | Register user baru |
-| POST | `/api/auth/signin` | Login user |
-| GET | `/api/products/:id/images` | Ambil gambar produk |
-| POST | `/api/notification` | Webhook notifikasi Midtrans |
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/auth/signup` | Register a new user |
+| POST | `/api/auth/signin` | User login |
+| GET | `/api/products/:id/images` | Get product images |
+| POST | `/api/notification` | Midtrans notification webhook |
 
-### Private Routes (Butuh Authentication)
+### Private Routes (Authentication Required)
 
 **Products**
-| Method | Endpoint | Deskripsi |
-|--------|----------|-----------|
-| GET | `/api/products` | Ambil semua produk |
-| POST | `/api/products` | Buat produk baru |
-| GET | `/api/products/:id` | Ambil detail produk |
-| PUT | `/api/products/:id` | Update produk |
-| DELETE | `/api/products/:id` | Hapus produk |
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/products` | Get all products |
+| POST | `/api/products` | Create a new product |
+| GET | `/api/products/:id` | Get product details |
+| PUT | `/api/products/:id` | Update a product |
+| DELETE | `/api/products/:id` | Delete a product |
 
 **Categories**
-| Method | Endpoint | Deskripsi |
-|--------|----------|-----------|
-| GET | `/api/category` | Ambil semua kategori |
-| POST | `/api/category` | Buat kategori baru |
-| PUT | `/api/category/:id` | Update kategori |
-| DELETE | `/api/category/:id` | Hapus kategori |
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/category` | Get all categories |
+| POST | `/api/category` | Create a new category |
+| PUT | `/api/category/:id` | Update a category |
+| DELETE | `/api/category/:id` | Delete a category |
 
 **Orders**
-| Method | Endpoint | Deskripsi |
-|--------|----------|-----------|
-| POST | `/api/order` | Buat pesanan baru |
-| GET | `/api/order` | Ambil daftar pesanan |
-| POST | `/api/orders/carts` | Checkout dari keranjang |
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/order` | Create a new order |
+| GET | `/api/order` | Get the list of orders |
+| POST | `/api/orders/carts` | Checkout from the cart |
 
 **Cart**
-| Method | Endpoint | Deskripsi |
-|--------|----------|-----------|
-| POST | `/api/carts/items` | Tambah item ke keranjang |
-| GET | `/api/carts/items` | Ambil isi keranjang |
-| PUT | `/api/carts/items/:item_id` | Update jumlah item |
-| DELETE | `/api/carts/items/:item_id` | Hapus item dari keranjang |
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/carts/items` | Add an item to the cart |
+| GET | `/api/carts/items` | Get cart contents |
+| PUT | `/api/carts/items/:item_id` | Update item quantity |
+| DELETE | `/api/carts/items/:item_id` | Remove an item from the cart |
 
 **Images**
-| Method | Endpoint | Deskripsi |
-|--------|----------|-----------|
-| POST | `/api/products/:id/images` | Upload gambar produk |
-| PUT | `/api/products/:id/images/:image_id` | Update gambar produk |
-| DELETE | `/api/products/:id/images/:image_id` | Hapus gambar produk |
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/products/:id/images` | Upload a product image |
+| PUT | `/api/products/:id/images/:image_id` | Update a product image |
+| DELETE | `/api/products/:id/images/:image_id` | Delete a product image |
 
 **Users**
-| Method | Endpoint | Deskripsi |
-|--------|----------|-----------|
-| GET | `/api/users` | Ambil semua user |
-| GET | `/api/users/:id` | Ambil detail user |
-| DELETE | `/api/users/:id` | Hapus user |
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/users` | Get all users |
+| GET | `/api/users/:id` | Get user details |
+| DELETE | `/api/users/:id` | Delete a user |
 
-## Instalasi
+## Installation
 
 ### Prerequisites
 
@@ -112,7 +112,7 @@ Categories ──< Products
 
 ### Setup
 
-1. Clone repository
+1. Clone the repository
    ```bash
    git clone https://github.com/username/e-commerce.git
    cd e-commerce
@@ -123,7 +123,7 @@ Categories ──< Products
    npm install
    ```
 
-3. Buat file `.env`
+3. Create a `.env` file
    ```env
    DATABASE_URL="postgresql://user:password@localhost:5432/ecommerce"
    JWT_SECRET="your_jwt_secret"
@@ -135,12 +135,12 @@ Categories ──< Products
    TELEGRAM_CHAT_ID="your_chat_id"
    ```
 
-4. Jalankan migrasi database
+4. Run database migrations
    ```bash
    npx prisma migrate dev
    ```
 
-5. Jalankan server
+5. Start the server
    ```bash
    npm start
    ```
@@ -158,7 +158,7 @@ src/
 ├── app/            # App config (Express, database, logging)
 ├── controller/     # Request handlers
 ├── error/          # Custom error classes
-├── middleware/      # Auth & error middleware
+├── middleware/     # Auth & error middleware
 ├── router/         # Route definitions
 ├── service/        # Business logic
 ├── utils/          # Utilities (Cloudinary, Midtrans, Multer, Telegram)
