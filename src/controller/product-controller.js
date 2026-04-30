@@ -9,7 +9,10 @@ import {
 const getProduct = async (req, res, next) => {
   try {
     const result = await productService.get(req);
-    sendGetResponse(res, result);
+    res.status(200).json({
+      data: result.data,
+      paging: result.paging
+    })
   } catch (error) {
     next(error);
   }

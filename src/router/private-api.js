@@ -3,6 +3,10 @@ import productController from '../controller/product-controller.js';
 import { authMiddleware } from '../middleware/auth-middleware.js';
 import userController from '../controller/user-controller.js';
 import categoryController from '../controller/category-controller.js';
+import orderController from '../controller/order-controller.js';
+import imageController from '../controller/image-controller.js';
+import { upload } from '../utils/multer.js';
+import cartController from '../controller/cart-controller.js';
 
 const privateRoute = express.Router();
 
@@ -59,5 +63,32 @@ privateRoute.delete(
   authMiddleware,
   categoryController.removecategory
 );
+
+// order routes
+privateRoute.post(
+  '/api/order',
+  authMiddleware,
+  orderController.created
+);
+
+privateRoute.get(
+  '/api/order',
+  authMiddleware,
+  orderController.getOrder
+)
+
+privateRoute.post("/api/orders/carts", authMiddleware, orderController.checkoutCart)
+
+// Image routes
+privateRoute.post("/api/products/:id/images", authMiddleware, upload.single("image"), imageController.upload)
+privateRoute.put("/api/products/:id/images/:image_id", authMiddleware, imageController.update)
+privateRoute.delete("/api/products/:id/images/:image_id", authMiddleware, imageController.remove)
+
+
+// Cart routes
+privateRoute.post("/api/carts/items", authMiddleware, cartController.create)
+privateRoute.get("/api/carts/items", authMiddleware, cartController.get)
+privateRoute.put("/api/carts/items/:item_id", authMiddleware, cartController.update)
+privateRoute.delete("/api/carts/items/:item_id", authMiddleware, cartController.remove)
 
 export { privateRoute };

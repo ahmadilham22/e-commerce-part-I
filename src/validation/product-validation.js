@@ -16,4 +16,13 @@ const updateProductValidation = Joi.object({
   category_id: Joi.number().integer().optional(),
 });
 
-export { createProductValidation, updateProductValidation };
+const searchProductValidation = Joi.object({
+  name: Joi.string().optional(),
+  category_id: Joi.number().integer().optional(),
+  min_price: Joi.number().min(0).optional(),
+  max_price: Joi.number().min(0).optional(),
+  page: Joi.number().integer().min(1).default(1),
+  limit: Joi.number().integer().min(1).max(100).default(10),
+})
+
+export { searchProductValidation,createProductValidation, updateProductValidation };

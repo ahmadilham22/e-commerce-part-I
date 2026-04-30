@@ -2,30 +2,53 @@ import { prismaClient } from '../app/database.js';
 import { ResponseError } from '../error/response-error.js';
 import {
   createProductValidation,
+  searchProductValidation,
   updateProductValidation,
 } from '../validation/product-validation.js';
 import { validate } from '../validation/validation.js';
 
 const get = async (req) => {
-  const { category, startPrice, endPrice } = req.query;
-  const filter = {};
+  const validated = validate(searchProductValidation, req.query)
+  const {name, category_id, min_price, max_price, page, limit} = validated
+  const where = {};
 
-  if (category) {
-    filter.category_id = parseInt(category);
+  if (name) {
+    where.name = {contains: name, mode: "insensitive"}
   }
 
-  if (startPrice || endPrice) {
-    filter.price = {
-      ...(startPrice && { gte: parseInt(startPrice) }),
-      ...(endPrice && { gte: parseInt(endPrice) }),
-    };
+  if (category_id) {
+    where.category_id = category_id
   }
 
-  const result = await prismaClient.product.findMany({
-    where: filter,
-  });
+  if (min_price || max_price) {
+    where.price = {}
+    if (min_price) where.price.gte = min_price
+    if (max_price) where.price.lte = max_price
+  }
 
-  return result;
+  let skip = (page - 1) * limit
+  let take = limit
+
+  const [data, total] = await prismaClient.$transaction([
+    prismaClient.product.findMany({
+      where,
+      skip,
+      take,
+    }),
+    prismaClient.product.count({
+      where: where
+    })
+  ])
+
+  return {
+    data: data,
+    paging: {
+      current_page: page,
+      total_pages: Math.ceil(total/take),
+      total_items: total,
+      size: take
+    }
+  };
 };
 
 const create = async (req) => {
