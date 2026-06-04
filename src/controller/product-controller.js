@@ -18,10 +18,24 @@ const getProduct = async (req, res, next) => {
   }
 };
 
+const getByUserID = async (req, res, next) => {
+  try {
+    const result = await productService.getByUserID(req);
+    res.status(200).json({
+      data: result.data,
+      paging: result.paging
+    })
+  } catch (error) {
+    next(error);
+  }
+};
+
 const createProduct = async (req, res, next) => {
   try {
     const result = await productService.create(req);
-    sendCreateResponse(res, 'Successfully created product');
+    res.status(200).json({
+      data: result,
+    })
   } catch (error) {
     next(error);
   }
@@ -60,4 +74,5 @@ export default {
   getOneProduct,
   updateProduct,
   deleteProduct,
+  getByUserID,
 };

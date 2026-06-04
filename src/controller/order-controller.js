@@ -46,6 +46,17 @@ const getOrder = async (req, res, next) => {
   }
 }
 
+const getOrderByUserId = async (req, res, next) => {
+  try {
+    const result = await orderService.getOrderHistory(req)
+    res.status(200).json({
+      data: result
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
 export default {
-  created, notification, getOrder, checkoutCart
+  created, notification, getOrder, checkoutCart, getOrderByUserId
 }

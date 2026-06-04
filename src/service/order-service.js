@@ -1,7 +1,9 @@
 import { prismaClient } from "../app/database.js"
 import { ResponseError } from "../error/response-error.js"
 import { snap, coreApi } from "../utils/midtransClient.js"
+import { connectionRabbitMQ } from "../utils/rabbitMq.js"
 import { sendTelegramNotification } from "../utils/telegram.js"
+import { sendTelegramBotNotification } from "../utils/telegramUsingFetch.js"
 import { createOrderValidation } from "../validation/order-validation.js"
 import { validate } from "../validation/validation.js"
 import crypto from "crypto"
@@ -87,6 +89,7 @@ const checkOutFromCart = async (req) => {
   }
   
 }
+
 const createOrder = async (user, req) => {
   const orderValidate = validate(createOrderValidation, req)  
 
@@ -205,7 +208,10 @@ const handleWebhook = async (notificationPayload) => {
 Silakan cek dashboard backend Anda.
 `;
     // Kirim diam-diam tanpa di await agar webhook Midtrans tidak tertunda
-    sendTelegramNotification(message);
+    const channel = await connectionRabbitMQ()
+    await channel.assertQueue("telegram-notifications", {durable: true})
+    channel.sendToQueue("telegram-notifications", Buffer.from(message), {persistent: true})
+    // sendTelegramBotNotification(message);
   
   // 4. Jika transaksi gagal / batal / kedaluwarsa (deny / expire / cancel)
   } else if (transactionStatus === "deny" || transactionStatus === "expire" || transactionStatus === "cancel") {
@@ -242,6 +248,29 @@ const getOrder = async () => {
   return orders
 }
 
+const getOrderHistory = async (req) => {
+  const userId = parseInt(req.user.id)
+
+  const result = await prismaClient.order.findMany({
+    where: {
+      user_id: userId
+    },
+    include: {
+      orderItems: {
+        include: {
+          product: {
+            include: {
+              images: true
+            }
+          }
+        }
+      }
+    }
+  })
+
+  return result
+}
+
 export default {
-  createOrder, handleWebhook, getOrder, checkOutFromCart
+  createOrder, handleWebhook, getOrder, checkOutFromCart, getOrderHistory
 }

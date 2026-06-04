@@ -9,11 +9,11 @@ import { validate } from '../validation/validation.js';
 
 const get = async (req) => {
   const validated = validate(searchProductValidation, req.query)
-  const {name, category_id, min_price, max_price, page, limit} = validated
+  const { name, category_id, min_price, max_price, page, limit } = validated
   const where = {};
 
   if (name) {
-    where.name = {contains: name, mode: "insensitive"}
+    where.name = { contains: name, mode: "insensitive" }
   }
 
   if (category_id) {
@@ -34,6 +34,10 @@ const get = async (req) => {
       where,
       skip,
       take,
+      include: {
+        images: true,
+        category: true
+      }
     }),
     prismaClient.product.count({
       where: where
@@ -44,7 +48,61 @@ const get = async (req) => {
     data: data,
     paging: {
       current_page: page,
-      total_pages: Math.ceil(total/take),
+      total_pages: Math.ceil(total / take),
+      total_items: total,
+      size: take
+    }
+  };
+};
+
+const getByUserID = async (req) => {
+  const userId = parseInt(req.user.id)
+  const validated = validate(searchProductValidation, req.query)
+  const { name, category_id, min_price, max_price, page, limit } = validated
+  const where = {};
+
+  if (userId) {
+    where.user_id = userId
+  }
+
+  if (name) {
+    where.name = { contains: name, mode: "insensitive" }
+  }
+
+  if (category_id) {
+    where.category_id = category_id
+  }
+
+
+  if (min_price || max_price) {
+    where.price = {}
+    if (min_price) where.price.gte = min_price
+    if (max_price) where.price.lte = max_price
+  }
+
+  let skip = (page - 1) * limit
+  let take = limit
+
+  const [data, total] = await prismaClient.$transaction([
+    prismaClient.product.findMany({
+      where,
+      skip,
+      take,
+      include: {
+        images: true,
+        category: true
+      }
+    }),
+    prismaClient.product.count({
+      where: where
+    })
+  ])
+
+  return {
+    data: data,
+    paging: {
+      current_page: page,
+      total_pages: Math.ceil(total / take),
       total_items: total,
       size: take
     }
@@ -69,6 +127,10 @@ const getOne = async (req) => {
     where: {
       id: productId,
     },
+    include: {
+      images: true,
+      category: true
+    }
   });
 
   return result;
@@ -109,11 +171,22 @@ const remove = async (req) => {
     throw new ResponseError(404, 'Product not found');
   }
 
-  return prismaClient.product.delete({
-    where: {
-      id: productExist.id,
-    },
-  });
+  await prismaClient.$transaction([
+    prismaClient.image.deleteMany({
+      where: { product_id: productExist.id }
+    }),
+    prismaClient.cartItem.deleteMany({
+      where: { product_id: productExist.id }
+    }),
+    prismaClient.orderItem.deleteMany({
+      where: { product_id: productExist.id }
+    }),
+    prismaClient.product.delete({
+      where: { id: productExist.id }
+    })
+  ]);
+
+  return { message: "Product and all related data deleted successfully" };
 };
 
 export default {
@@ -122,4 +195,5 @@ export default {
   getOne,
   update,
   remove,
+  getByUserID,
 };
