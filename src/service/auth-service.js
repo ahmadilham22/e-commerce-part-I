@@ -30,7 +30,6 @@ const login = async (req) => {
   const payload = {
     id: findUser.id,
     email: findUser.email,
-    password: findUser.password,
   };
 
   const token = jwt.sign(payload, process.env.ACCESS_TOKEN, {

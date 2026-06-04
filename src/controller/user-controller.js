@@ -13,6 +13,15 @@ const get = async (req, res, next) => {
   }
 };
 
+const getMe = async (req, res, next) => {
+  try {
+    const result = await userService.getMe(req);
+    sendGetResponse(res, result);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const getOneUser = async (req, res, next) => {
   try {
     const result = await userService.getOne(req);
@@ -35,4 +44,5 @@ export default {
   getOneUser,
   deleteUser,
   get,
+  getMe,
 };

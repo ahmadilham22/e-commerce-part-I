@@ -13,6 +13,24 @@ const get = async () => {
   return result;
 };
 
+const getMe = async (req) => {
+  const userId = parseInt(req.user.id);
+  if (!userId) {
+    throw new ResponseError(404, 'user is not found');
+  }
+
+  const result = await prismaClient.user.findUnique({
+    where: {
+      id: userId,
+    },
+    select: {
+      id: true, name: true, email: true, phone_number: true
+    }
+  });
+
+  return result
+};
+
 const getOne = async (req) => {
   const userId = parseInt(req.params.id);
   const result = await prismaClient.user.findUnique({
@@ -43,4 +61,5 @@ export default {
   get,
   getOne,
   remove,
+  getMe
 };
