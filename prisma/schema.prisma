@@ -42,7 +42,7 @@ model Product {
   id Int @id @default(autoincrement())
   user_id Int
   name String @db.VarChar(100)
-  description String @db.VarChar(255)
+  description String @db.Text
   price Decimal@db.Decimal()
   stock Int @db.Integer()
   category_id Int
@@ -61,7 +61,7 @@ model Product {
 model Image {
    id Int @id @default(autoincrement())
    product_id Int
-   image_url String @db.VarChar(100)
+   image_url String @db.Text
    is_primary Boolean @default(false)
    created_at DateTime @default(now())
    updated_at DateTime @updatedAt

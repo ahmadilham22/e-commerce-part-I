@@ -11,16 +11,15 @@ import cartController from '../controller/cart-controller.js';
 const privateRoute = express.Router();
 
 // product routes
-privateRoute.get('/api/products', authMiddleware, productController.getProduct);
+privateRoute.get(
+  '/api/me/products',
+  authMiddleware,
+  productController.getByUserID
+);
 privateRoute.post(
   '/api/products',
   authMiddleware,
   productController.createProduct
-);
-privateRoute.get(
-  '/api/products/:id',
-  authMiddleware,
-  productController.getOneProduct
 );
 privateRoute.put(
   '/api/products/:id',
@@ -35,6 +34,7 @@ privateRoute.delete(
 
 // user routes
 privateRoute.get('/api/users', authMiddleware, userController.get);
+privateRoute.get('/api/users/me', authMiddleware, userController.getMe);
 privateRoute.get('/api/users/:id', authMiddleware, userController.getOneUser);
 privateRoute.delete(
   '/api/users/:id',
@@ -47,11 +47,6 @@ privateRoute.post(
   '/api/category',
   authMiddleware,
   categoryController.createCategory
-);
-privateRoute.get(
-  '/api/category',
-  authMiddleware,
-  categoryController.getAllCategory
 );
 privateRoute.put(
   '/api/category/:id',
@@ -78,6 +73,12 @@ privateRoute.get(
 )
 
 privateRoute.post("/api/orders/carts", authMiddleware, orderController.checkoutCart)
+
+privateRoute.get(
+  '/api/orders',
+  authMiddleware,
+  orderController.getOrderByUserId
+)
 
 // Image routes
 privateRoute.post("/api/products/:id/images", authMiddleware, upload.single("image"), imageController.upload)
